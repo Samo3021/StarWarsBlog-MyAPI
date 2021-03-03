@@ -140,7 +140,8 @@ def register():
         
         db.session.add(user)
         db.session.commit()
-
+        return jsonify("registor correcto"), 200
+    
 @app.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
@@ -166,9 +167,10 @@ def login():
         data = {
             "user": user.serialize(),
             "token": access_token,
-            "expires": expiracion.total_seconds()*1000
+            "expires": expiracion.total_seconds()*1000,
+            "activo": True  
         }
-
+        
         return jsonify(data), 200
     
 @app.route('/profile', methods=['GET'])
