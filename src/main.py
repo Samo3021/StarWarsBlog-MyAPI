@@ -77,27 +77,44 @@ def get_planets_id(planets_id):
     return jsonify(planet.serialize()), 200
 
 @app.route('/user/<int:userid>/favorites', methods=['GET'])
+@jwt_required()
 def get_userfav_id(userid):
-
+    # selecionar Usuario
+    email = get_jwt_identity()
+    user = User.query.filter_by(email = email)
+    #como hacer la conexion
     
+    #check de userio
+    # user = userid
+    
+    #get all
     favorites =  Favorites.query.filter_by(user_userid = userid)
     results =list(map(lambda x: x.serialize(), favorites))
     return jsonify(results), 200
 
-@app.route('/user/<int:userid>/favorites', methods=['POST'])
-def add_favuser_id(userid):
-    
-    
+@app.route('/user/favorites', methods=['POST'])
+@jwt_required()
+def add_favuser_id():
+    # selecionar Usuario
+    email = get_jwt_identity()
+    #ya se arreglo, lo que necesitabamos era poner el .first() al final para que seleccionara el usuario, no pense que era requerido pero parece que si.
+    user = User.query.filter_by(email=email).first()
+    print(email, user.userid)
+    #add
     userfav = request.get_json()
-    newfav= Favorites(name=userfav["name"], object_id=userfav["object_id"], user_userid = userid)
+    newfav= Favorites(name=userfav["name"], object_id=userfav["object_id"], user_userid=user.userid)
     db.session.add(newfav)
     db.session.commit()
     
     return jsonify(newfav.serialize()), 200
 @app.route('/favorites/<int:favorite_id>', methods=['DELETE'])
+@jwt_required()
 def del_favuser_id(favorite_id):
+    # selecionar Usuario
+    email = get_jwt_identity()
+    user = User.query.filter_by(email = email)
     
-    
+    #del
     delfav = Favorites.query.get(favorite_id)
     if delfav is None:
         raise APIException('User not found', status_code=404)
