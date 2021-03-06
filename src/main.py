@@ -76,19 +76,19 @@ def get_planets_id(planets_id):
     
     return jsonify(planet.serialize()), 200
 
-@app.route('/user/<int:userid>/favorites', methods=['GET'])
+@app.route('/user/favorites', methods=['GET'])
 @jwt_required()
-def get_userfav_id(userid):
+def get_userfav_id():
     # selecionar Usuario
     email = get_jwt_identity()
-    user = User.query.filter_by(email = email)
+    user = User.query.filter_by(email = email).first()
     #como hacer la conexion
-    
+     
     #check de userio
     # user = userid
     
     #get all
-    favorites =  Favorites.query.filter_by(user_userid = userid)
+    favorites =  Favorites.query.filter_by(user_userid = user.userid)
     results =list(map(lambda x: x.serialize(), favorites))
     return jsonify(results), 200
 
@@ -108,11 +108,9 @@ def add_favuser_id():
     
     return jsonify(newfav.serialize()), 200
 @app.route('/favorites/<int:favorite_id>', methods=['DELETE'])
-@jwt_required()
 def del_favuser_id(favorite_id):
-    # selecionar Usuario
-    email = get_jwt_identity()
-    user = User.query.filter_by(email = email)
+    # selecionar Usuario/es necesario jwt en delete?
+    
     
     #del
     delfav = Favorites.query.get(favorite_id)

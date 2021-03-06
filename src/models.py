@@ -10,7 +10,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     favChild = db.relationship('Favorites', lazy=True)
     def __repr__(self):
-        return '<User %r>' % self.name
+        return '<User %r>' % self.userid
 
     def serialize(self):
         return {
