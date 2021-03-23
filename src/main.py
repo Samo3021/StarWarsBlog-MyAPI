@@ -76,9 +76,9 @@ def get_planets_id(planets_id):
     
     return jsonify(planet.serialize()), 200
 
-@app.route('/user/favorites', methods=['GET'])
+@app.route('/user/<int:userid>/favorites', methods=['GET'])
 @jwt_required()
-def get_userfav_id():
+def get_userfav_id(userid):
     # selecionar Usuario
     email = get_jwt_identity()
     user = User.query.filter_by(email = email).first()
@@ -92,9 +92,9 @@ def get_userfav_id():
     results =list(map(lambda x: x.serialize(), favorites))
     return jsonify(results), 200
 
-@app.route('/user/favorites', methods=['POST'])
+@app.route('/user/<int:userid>/favorites', methods=['POST'])
 @jwt_required()
-def add_favuser_id():
+def add_favuser_id(userid):
     # selecionar Usuario
     email = get_jwt_identity()
     #ya se arreglo, lo que necesitabamos era poner el .first() al final para que seleccionara el usuario, no pense que era requerido pero parece que si.
